@@ -1,15 +1,19 @@
 **Virtual Medical Examiner Assistant (VMEA)**
+
 VMEA is an AI-powered, avatar-based virtual medical examiner assistant designed to conduct preliminary insurance health assessments through natural conversation. This innovative application streamlines the process for both users and underwriters by delivering interactive health evaluations and structured medical reports.
 
 **Overview**
+
 VMEA leverages a professional medical avatar and WebRTC-based real-time communication to engage users in a conversational health assessment. It evaluates key health areas, including:
 
 **Cardiovascular Health**
+
 Metabolic Health
 Major Organ Systems
 The system aggregates user responses, calculates risk scores using AI-driven analytics, and generates structured reports that facilitate faster, more informed underwriting decisions.
 
 **Key Features**
+
 Real-Time Video & Audio: Utilizes WebRTC for seamless and secure real-time interactions with a professional medical avatar.
 AI-Powered Conversational Flows: Employs natural language processing (NLP) to guide users through detailed health assessments.
 Risk Scoring & Report Generation: Automatically analyzes user responses and biometric data to generate comprehensive medical examination reports with integrated risk scoring.
@@ -26,6 +30,7 @@ Multi-Language Support: Expand the conversational flows to support multiple lang
 Underwriter Dashboard: Develop a secure dashboard for underwriters to review reports and risk analytics.
 
 **Challenges And Future Consideration**
+
 Regulatory & Liability Concerns:
 Virtual health assessments must meet stringent medical regulations. Inaccurate risk scoring or misinterpretation of health data might lead to liability issues and legal challenges.
 User Trust & Adoption:
@@ -38,6 +43,7 @@ Maintenance & Scalability:
 Continuous improvement of the AI models and communication infrastructure is necessary, which can be resource-intensive and complex as the user base grows.
 
 **Our Project Workflow**
+
 1. Requirements & Planning
 Define Scope:
 Identify key functionalities such as WebRTC-based video, AI-powered conversational flows, risk scoring, and secure data handling.
@@ -80,4 +86,5 @@ Final Presentation:
 Highlight the workflow, features, and future enhancement plans during your hackathon demo.
 
 **Flowchart**
+
 ![image](https://github.com/user-attachments/assets/4f66b8ac-0a5e-4d1f-8bdb-9995a65668ae)
