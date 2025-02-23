@@ -28,12 +28,16 @@ interface ExamState {
   answers: Answer[];
   currentQuestionIndex: number;
   examComplete: boolean;
+  selectedDoctor: 'male' | 'female' | null;
+  doctorName: string;
   addMessage: (text: string, sender: 'user' | 'assistant') => void;
   setCurrentStep: (step: number) => void;
   setIsRecording: (isRecording: boolean) => void;
   addAnswer: (answer: Answer) => void;
   setExamComplete: (complete: boolean) => void;
   setCurrentQuestionIndex: (index: number) => void;
+  setSelectedDoctor: (doctor: 'male' | 'female') => void;
+  setDoctorName: (name: string) => void;
 }
 
 const medicalQuestions: Question[] = [
@@ -97,7 +101,75 @@ const medicalQuestions: Question[] = [
     category: 'general',
     riskWeight: 2,
   },
+  {
+    id: '11',
+    text: 'Do you experience any joint pain or stiffness?',
+    category: 'general',
+    riskWeight: 2,
+  },
+  {
+    id: '12',
+    text: 'How would you rate your sleep quality on a scale of 1-10?',
+    category: 'lifestyle',
+    riskWeight: 2,
+  },
+  {
+    id: '13',
+    text: 'Have you experienced unexplained weight changes in the past 6 months?',
+    category: 'general',
+    riskWeight: 2,
+  },
+  {
+    id: '14',
+    text: 'Do you have any allergies or chronic conditions?',
+    category: 'general',
+    riskWeight: 2,
+  },
+  {
+    id: '15',
+    text: 'How often do you experience digestive issues?',
+    category: 'general',
+    riskWeight: 1,
+  },
+  {
+    id: '16',
+    text: 'Do you have a family history of cancer?',
+    category: 'general',
+    riskWeight: 3,
+  },
+  {
+    id: '17',
+    text: 'How many hours do you spend sitting each day?',
+    category: 'lifestyle',
+    riskWeight: 2,
+  },
+  {
+    id: '18',
+    text: 'Do you experience anxiety or panic attacks?',
+    category: 'general',
+    riskWeight: 2,
+  },
+  {
+    id: '19',
+    text: 'How would you rate your diet quality on a scale of 1-10?',
+    category: 'lifestyle',
+    riskWeight: 2,
+  },
+  {
+    id: '20',
+    text: 'Have you experienced any vision or hearing changes?',
+    category: 'general',
+    riskWeight: 2,
+  }
 ];
+
+const maleNames = ['Dr. James Wilson', 'Dr. Michael Chen', 'Dr. David Thompson', 'Dr. Robert Anderson'];
+const femaleNames = ['Dr. Sarah Mitchell', 'Dr. Emily Parker', 'Dr. Maria Rodriguez', 'Dr. Lisa Chen'];
+
+const getRandomName = (gender: 'male' | 'female'): string => {
+  const names = gender === 'male' ? maleNames : femaleNames;
+  return names[Math.floor(Math.random() * names.length)];
+};
 
 export const useExamStore = create<ExamState>((set) => ({
   messages: [],
@@ -107,6 +179,8 @@ export const useExamStore = create<ExamState>((set) => ({
   answers: [],
   currentQuestionIndex: 0,
   examComplete: false,
+  selectedDoctor: null,
+  doctorName: '',
   addMessage: (text, sender) =>
     set((state) => ({
       messages: [
@@ -127,4 +201,9 @@ export const useExamStore = create<ExamState>((set) => ({
     })),
   setExamComplete: (complete) => set({ examComplete: complete }),
   setCurrentQuestionIndex: (index) => set({ currentQuestionIndex: index }),
+  setSelectedDoctor: (doctor) => set((state) => ({ 
+    selectedDoctor: doctor,
+    doctorName: getRandomName(doctor)
+  })),
+  setDoctorName: (name) => set({ doctorName: name }),
 }));
