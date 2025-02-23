@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Video, Calendar, X } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Video, Calendar, X, Camera, CameraOff } from 'lucide-react';
 
 interface TelemedicineModalProps {
   isOpen: boolean;
@@ -10,12 +10,59 @@ export function TelemedicineModal({ isOpen, onClose }: TelemedicineModalProps) {
   const [consultationType, setConsultationType] = useState<'video' | 'schedule'>('video');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [videoEnabled, setVideoEnabled] = useState(false);
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [stream]);
+
+  const toggleVideo = async () => {
+    if (videoEnabled) {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        setStream(null);
+      }
+      setVideoEnabled(false);
+    } else {
+      try {
+        const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        setStream(mediaStream);
+        if (videoRef.current) {
+          videoRef.current.srcObject = mediaStream;
+        }
+        setVideoEnabled(true);
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        alert('Unable to access camera. Please check your permissions.');
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+    }
+  }, [stream]);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle consultation booking
+    setShowConfirmation(true);
+  };
+
+  const handleConfirm = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+    setShowConfirmation(false);
     onClose();
   };
 
@@ -64,6 +111,46 @@ export function TelemedicineModal({ isOpen, onClose }: TelemedicineModalProps) {
           </button>
         </div>
 
+        {consultationType === 'video' && (
+          <div className="mb-8">
+            <div className="relative w-full h-64 bg-gray-900 rounded-xl overflow-hidden mb-4">
+              {videoEnabled ? (
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+                  <Camera size={48} />
+                </div>
+              )}
+            </div>
+            <button
+              onClick={toggleVideo}
+              className={`w-full py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 ${
+                videoEnabled
+                  ? 'bg-red-500 text-white hover:bg-red-600'
+                  : 'bg-blue-500 text-white hover:bg-blue-600'
+              }`}
+            >
+              {videoEnabled ? (
+                <>
+                  <CameraOff size={20} />
+                  <span>Stop Camera</span>
+                </>
+              ) : (
+                <>
+                  <Camera size={20} />
+                  <span>Start Camera</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -99,6 +186,28 @@ export function TelemedicineModal({ isOpen, onClose }: TelemedicineModalProps) {
           </button>
         </form>
       </div>
+
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 transform transition-all duration-500 hover:scale-[1.02] shadow-2xl">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Calendar className="w-8 h-8 text-green-500" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Consultation Scheduled!</h3>
+              <p className="text-gray-600 mb-6">
+                Your consultation has been scheduled for {selectedDate} at {selectedTime}. We'll send you a confirmation email with the meeting details.
+              </p>
+              <button
+                onClick={handleConfirm}
+                className="w-full bg-green-500 text-white py-3 rounded-xl font-semibold hover:bg-green-600 transform transition-all duration-300 hover:scale-105"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
