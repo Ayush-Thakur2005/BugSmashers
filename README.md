@@ -1,3 +1,6 @@
+**YOU CAN TRY THE WEB APP HERE**
+https://bejewelled-wisp-4aaf9d.netlify.app/
+
 **Virtual Medical Examiner Assistant (VMEA)**
 
 VMEA is an AI-powered, avatar-based virtual medical examiner assistant designed to conduct preliminary insurance health assessments through natural conversation. This innovative application streamlines the process for both users and underwriters by delivering interactive health evaluations and structured medical reports.
